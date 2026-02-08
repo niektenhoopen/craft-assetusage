@@ -27,7 +27,7 @@ class Asset extends Component
             return $this->formatResults(count($relations));
         }
 
-        $count = count(array_filter($relations, function ($relation) {
+        $count = count(array_filter($relations, function($relation) {
             try {
                 /** @var craft\base\Element */
                 $element = Craft::$app->elements->getElementById($relation['id'], null, $relation['siteId']);

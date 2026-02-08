@@ -3,17 +3,21 @@
 namespace roelvanhintum\assetusage;
 
 use Craft;
-use roelvanhintum\assetusage\services\Asset as AssetService;
 use craft\base\Plugin as CraftPlugin;
-use craft\base\Model;
 use craft\console\Application as ConsoleApplication;
 use craft\controllers\ElementsController;
 use craft\elements\Asset;
+use craft\events\DefineAttributeHtmlEvent;
 use craft\events\DefineElementEditorHtmlEvent;
 use craft\events\RegisterElementTableAttributesEvent;
-use craft\events\DefineAttributeHtmlEvent;
+use roelvanhintum\assetusage\models\Settings;
+use roelvanhintum\assetusage\services\Asset as AssetService;
 use yii\base\Event;
 
+/**
+ * @method static Plugin getInstance()
+ * @property-read \roelvanhintum\assetusage\services\Asset $asset
+ */
 class Plugin extends CraftPlugin
 {
     public string $schemaVersion = '2.0.0';
@@ -53,14 +57,14 @@ class Plugin extends CraftPlugin
         }
     }
 
-    protected function createSettingsModel(): ?Model
+    protected function createSettingsModel(): Settings
     {
-        return new \roelvanhintum\assetusage\models\Settings();
+        return new Settings();
     }
 
     private function registerTemplateHooks()
     {
-        Event::on(ElementsController::class, ElementsController::EVENT_DEFINE_EDITOR_CONTENT, function (DefineElementEditorHtmlEvent $event) {
+        Event::on(ElementsController::class, ElementsController::EVENT_DEFINE_EDITOR_CONTENT, function(DefineElementEditorHtmlEvent $event) {
             if ($event->element instanceof Asset) {
                 /** @var Asset */
                 $asset = $event->element;
@@ -77,12 +81,12 @@ class Plugin extends CraftPlugin
      */
     private function registerTableAttributes()
     {
-        Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function (RegisterElementTableAttributesEvent $event) {
+        Event::on(Asset::class, Asset::EVENT_REGISTER_TABLE_ATTRIBUTES, function(RegisterElementTableAttributesEvent $event) {
             $event->tableAttributes['usage'] = [
                 'label' => Craft::t('assetusage', 'Usage'),
             ];
         });
-        Event::on(Asset::class, Asset::EVENT_DEFINE_ATTRIBUTE_HTML, function (DefineAttributeHtmlEvent $event) {
+        Event::on(Asset::class, Asset::EVENT_DEFINE_ATTRIBUTE_HTML, function(DefineAttributeHtmlEvent $event) {
             if ($event->attribute === 'usage') {
                 /** @var Asset $asset */
                 $asset = $event->sender;

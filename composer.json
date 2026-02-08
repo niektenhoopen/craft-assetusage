@@ -29,8 +29,13 @@
         "craftcms/cms": "^5.0.0"
     },
     "require-dev": {
-        "craftcms/phpstan": "dev-main",
-        "squizlabs/php_codesniffer": "3.*"
+        "craftcms/ecs": "dev-main",
+        "craftcms/phpstan": "dev-main"
+    },
+    "scripts": {
+        "phpstan": "phpstan --ansi --memory-limit=1G",
+        "check-cs": "ecs check --ansi",
+        "fix-cs": "ecs check --fix --ansi"
     },
     "autoload": {
         "psr-4": {
